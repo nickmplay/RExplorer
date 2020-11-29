@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Rexplorer Tests</title>
+	<link rel="stylesheet" href="./2.6.1/jasmine.min.css">
+	<script src="./2.6.1/jasmine.min.js"></script>
+	<script src="./2.6.1/jasmine-html.min.js"></script>
+	<script src="./2.6.1/boot.min.js"></script>
+	<script src="../js/app.js"></script>
+</head>
+<body>
+
+<script>
+//jasmine docs:https://jasmine.github.io/2.3/introduction.html#section-Expectations
+
+//test app.init set up
+describe("app.init", function(){
+	app.init("test");
+	var resultLength = app.state.dirs.length;
+	var resultnDir = app.state.nDirs;
+
+	it("has one default directory following init", function(){
+		expect(resultLength).toEqual(1);
+		expect(resultnDir).toEqual(0);
+	}); 
+});
+
+// test app.count set up
+describe("app.addTab", function(){
+	app.init("test");
+	var newTab = {
+		path: "New",
+		subDirs: ["Folder 1", "Folder 2"],
+		files: ["file1.xlsx", "file2.xls"]
+	};
+	app.addTab(newTab);
+
+	it("can add a tab", function(){
+		expect(app.state.nDirs).toEqual(1);
+	});
+});
+
+
+</script>
+</body>
+</html>
