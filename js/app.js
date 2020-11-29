@@ -35,6 +35,7 @@ app.addTab = function(oTab){
 // remove directory (by number)
 app.removeTab = function(n){
   app.state.dirs = app.state.dirs.filter(e => e.tabN != n);
+  
   // renumber
   for(let i = 0; i < app.state.dirs.length; i++){
     app.state.dirs[i].tabN = i + 1;
@@ -43,6 +44,15 @@ app.removeTab = function(n){
 }
 
 // update directory
+app.updateTab = function(iTab, oTab){
+  app.state.dirs[iTab - 1] = oTab;
+
+  // renumber
+  for(let i = 0; i < app.state.dirs.length; i++){
+    app.state.dirs[i].tabN = i + 1;
+  }
+  app.countDirs();
+}
 
 // init app
 app.init = function(appDiv){

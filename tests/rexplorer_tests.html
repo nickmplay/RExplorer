@@ -26,7 +26,7 @@ describe("app.init", function(){
 	}); 
 });
 
-// test app.count set up
+// test app.addTab set up
 describe("app.addTab", function(){
 	app.init("test");
 	var newTab = {
@@ -36,11 +36,60 @@ describe("app.addTab", function(){
 	};
 	app.addTab(newTab);
 
+	var resultCount = app.state.nDirs;
+
 	it("can add a tab", function(){
-		expect(app.state.nDirs).toEqual(1);
+		expect(resultCount).toEqual(1);
 	});
 });
 
+// test app.removeTab set up
+describe("app.removeTab", function(){
+	app.init("test");
+	var newTab = {
+		path: "New",
+		subDirs: ["Folder 1", "Folder 2"],
+		files: ["file1.xlsx", "file2.xls"]
+	};
+	app.addTab(newTab);
+	app.addTab(JSON.parse(JSON.stringify(newTab)));
+	var resultCountPre = app.state.nDirs;
+
+	app.removeTab(1);
+	var resultCountPost = app.state.nDirs;
+
+	it("can add a tab", function(){
+		expect(resultCountPre).toEqual(2);
+		expect(resultCountPost).toEqual(1);
+	});
+});
+
+// test app.updateTab set up
+describe("app.removeTab", function(){
+	app.init("test");
+	var newTab = {
+		path: "New",
+		subDirs: ["Folder 1", "Folder 2"],
+		files: ["file1.xlsx", "file2.xls"]
+	};
+	app.addTab(newTab);
+	app.addTab(JSON.parse(JSON.stringify(newTab)));
+	var resultCountPre = app.state.nDirs;
+	var resultPathPre = app.state.dirs[1].path;
+
+	app.updateTab(2, {
+		path: "Updated",
+		subDirs: ["Folder 1", "Folder 2"],
+		files: ["file1.xlsx", "file2.xls"]
+	});
+	var resultPathPost = app.state.dirs[1].path;
+
+	it("can add a tab", function(){
+		expect(resultPathPre).toEqual("New");
+		expect(resultCountPre).toEqual(2);
+		expect(resultPathPost).toEqual("Updated");
+	});
+});
 
 </script>
 </body>
