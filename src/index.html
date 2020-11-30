@@ -10,7 +10,13 @@
 
   <script src="./js/app.js"></script>
   <script>
-    
+    // test API
+    fetch("http://127.0.0.1:8000/dirR?path=C:\\Users\\nickm\\Documents\\2_Work").then(function(response){
+      response.json().then(function(json){
+        console.log(json);
+      })
+    })
+
   </script>
 </body>
 </html>
