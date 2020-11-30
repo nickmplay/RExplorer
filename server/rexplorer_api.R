@@ -6,4 +6,7 @@ dirR <- function(path){
   list(dir = path, subDirs = subd_list, files = file_list)
 }
 
+#* @assets ../src /
+list()
+
 # C:\Users\nickm\Documents\2_Work
