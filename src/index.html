@@ -1,22 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rexplorer</title>
+  <style>
+    ul {
+      list-style: none;
+    }
+
+    li {
+      border: 1px solid silver;
+      padding: 2px;
+    }
+
+    .folder {
+      background-color: goldenrod;
+    }
+
+    .file {
+      background-color: cadetblue;
+    }
+  </style>
 </head>
+
 <body>
   <h1>Rexplorer</h1>
+
+  <div id="app">
+    <div id="buttons">
+      <button id="b1"></button>
+    </div>
+
+    <h2 id="path"></h2>
+
+    <ul id="viewer">
+
+    </ul>
+  </div>
 
   <script src="./js/app.js"></script>
   <script>
     // test API
-    fetch("http://127.0.0.1:8000/dirR?path=C:\\Users\\nickm\\Documents\\2_Work").then(function(response){
-      response.json().then(function(json){
-        console.log(json);
+    var getAndRender = function (sPath) {
+      fetch(sPath).then(function (response) {
+        response.json().then(function (json) {
+          // file path
+          document.getElementById("path").innerHTML = json.dir;
+          console.log(json)
+          // directory contents
+          var uList = document.getElementById("viewer");
+
+          // folders
+          for (let i = 0; i < json.subDirs.length; i++) {
+            let newLi = document.createElement("li");
+            newLi.innerHTML = json.subDirs[i];
+            newLi.classList.add("folder");
+            newLi.setAttribute("path", [json.dir, "\\", json.subDirs[i]].join(''));
+            uList.appendChild(newLi);
+          }
+
+          // files
+          for (let i = 0; i < json.files.length; i++) {
+            let newLi = document.createElement("li");
+            newLi.innerHTML = json.files[i];
+            newLi.classList.add("file");
+            uList.appendChild(newLi);
+          }
+        })
       })
-    })
+    };
+
+    // initial render
+    getAndRender("http://127.0.0.1:8000/dirR?path=C:\\Users\\nickm\\Documents\\2_Work")
+
+    // add event handler
+    document.getElementById("app").onclick = function (e) {
+      console.log(e.target);
+
+      // new sub directory
+      if (e.target.classList[0] == "folder") {
+        // clear current list
+        document.getElementById("viewer").innerHTML = "";
+
+        // fetch and render new directory
+        var newPath = "http://127.0.0.1:8000/dirR?path=";
+        newPath += e.target.getAttribute("path");
+        getAndRender(newPath);
+      }
+
+      // go to parent
+      if (e.target.id == "path"){
+        // clear current list
+        document.getElementById("viewer").innerHTML = "";
+
+        // get parent
+        var newPath = e.target.innerHTML.split("\\");
+        newPath.splice(-1);
+        newPath = "http://127.0.0.1:8000/dirR?path=" + newPath.join("\\");
+        
+        // fetch and render
+        getAndRender(newPath);
+      }
+    }
 
   </script>
 </body>
+
 </html>
