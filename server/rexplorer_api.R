@@ -20,8 +20,13 @@ cors <- function(req, res) {
 dirR <- function(path){
   # run local query
   subd_list <- list.dirs(path, recursive = F, full.names = F)
-  file_list <- setdiff(list.files(path), subd_list)
-  list(dir = path, subDirs = subd_list, files = file_list)
+  
+  if(length(subd_list) == 0){
+    return(list(err = "Directory not found"))
+  } else {
+    file_list <- setdiff(list.files(path), subd_list)
+    return(list(dir = path, subDirs = subd_list, files = file_list))
+  }
 }
 
 #* @assets ../src /

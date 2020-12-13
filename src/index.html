@@ -84,6 +84,7 @@
         <span class="close">&times;</span>
         <label for="new-path">New Directory</label>
         <input type="text" id="new-path" name="new-path">
+        <button id="modal-add">Add</button>
       </div>
     </div>
 
@@ -186,12 +187,33 @@
       if (e.target.tagName == "BUTTON") {
         var addBtn = (e.target.innerHTML == "+");
 
-        // add new directory
+        // add new directory - show modal
         if (addBtn) {
           console.log(e.target.id);
           // show modal
           document.getElementById("new-path").value = "C:\\";
           modal.style.display = "block";
+        }
+
+        // add new directory - fetch
+        if (e.target.id == "modal-add"){
+          var newPath = document.getElementById("new-path").value;
+          newPath = "http://127.0.0.1:8000/dirR?path=" + newPath;
+          console.log(newPath);
+
+          // test if path is valid
+          fetch(newPath).then(function(response){
+            response.json().then(function(json){
+              // test if input error
+              if(json.err){
+                console.log("Error flag");
+              } else {
+                console.log("Render app");
+              }
+            })
+          }).catch(function(err){
+            console.log(err);
+          });
         }
 
       }
