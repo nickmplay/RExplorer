@@ -30,7 +30,9 @@
 
   <div id="app">
     <div id="buttons">
-      <button id="b1"></button>
+      <button id="b1" active="true"
+        path="http://127.0.0.1:8000/dirR?path=C:\\Users\\nickm\\Documents">Documents</button>
+      <button id="b2" active="false">+</button>
     </div>
 
     <h2 id="path"></h2>
@@ -68,15 +70,18 @@
             newLi.classList.add("file");
             uList.appendChild(newLi);
           }
+
+          // update tab name
+          document.querySelector("[active=true]").innerHTML = json.dir[0].split("\\").pop();
         })
       })
     };
 
     // initial render
-    getAndRender("http://127.0.0.1:8000/dirR?path=C:\\Users\\nickm\\Documents\\2_Work")
+    getAndRender("http://127.0.0.1:8000/dirR?path=C:\\Users\\nickm\\Documents")
 
     // add event handler
-    document.getElementById("app").onclick = function (e) {
+    document.getElementById("app").ondblclick = function (e) {
       console.log(e.target);
 
       // new sub directory
@@ -91,7 +96,7 @@
       }
 
       // go to parent
-      if (e.target.id == "path"){
+      if (e.target.id == "path") {
         // clear current list
         document.getElementById("viewer").innerHTML = "";
 
@@ -99,7 +104,7 @@
         var newPath = e.target.innerHTML.split("\\");
         newPath.splice(-1);
         newPath = "http://127.0.0.1:8000/dirR?path=" + newPath.join("\\");
-        
+
         // fetch and render
         getAndRender(newPath);
       }
