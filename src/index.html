@@ -70,6 +70,15 @@
       text-decoration: none;
       cursor: pointer;
     }
+
+    #modal-error {
+      background-color: red;
+      display: none;
+    }
+
+    [active=true] {
+      background-color: yellow;
+    }
   </style>
 </head>
 
@@ -85,6 +94,7 @@
         <label for="new-path">New Directory</label>
         <input type="text" id="new-path" name="new-path">
         <button id="modal-add">Add</button>
+        <p id="modal-error">Directory not found</p>
       </div>
     </div>
 
@@ -117,11 +127,12 @@
 
     // fetch data and update list and button name
     var getAndRender = function (sPath) {
+      console.log(sPath);
       fetch(sPath).then(function (response) {
         response.json().then(function (json) {
           // file path
           document.getElementById("path").innerHTML = json.dir;
-          //console.log(json)
+          
           // directory contents
           var uList = document.getElementById("viewer");
 
@@ -143,7 +154,11 @@
           }
 
           // update tab name
-          document.querySelector("[active=true]").innerHTML = json.dir[0].split("\\").pop();
+          var newName = json.dir[0].split("\\").pop();
+          if (newName.length == 0) {
+            newName = json.dir[0];
+          }
+          document.querySelector("[active=true]").innerHTML = newName;
         })
       })
     };
@@ -151,9 +166,9 @@
     // initial render
     getAndRender("http://127.0.0.1:8000/dirR?path=C:\\Users\\nickm\\Documents")
 
+    // **********************
     // add event handler - double click
     document.getElementById("app").ondblclick = function (e) {
-      //console.log(e.target);
 
       // new sub directory
       if (e.target.classList[0] == "folder") {
@@ -181,6 +196,7 @@
       }
     }
 
+    // **********************
     // add event handler - button click
     document.getElementById("app").onclick = function (e) {
       //process button clicks
@@ -189,32 +205,79 @@
 
         // add new directory - show modal
         if (addBtn) {
-          console.log(e.target.id);
           // show modal
           document.getElementById("new-path").value = "C:\\";
           modal.style.display = "block";
+          document.getElementById("modal-error").style.display = "none";
         }
 
         // add new directory - fetch
-        if (e.target.id == "modal-add"){
+        if (e.target.id == "modal-add") {
           var newPath = document.getElementById("new-path").value;
           newPath = "http://127.0.0.1:8000/dirR?path=" + newPath;
-          console.log(newPath);
 
           // test if path is valid
-          fetch(newPath).then(function(response){
-            response.json().then(function(json){
+          fetch(newPath).then(function (response) {
+            response.json().then(function (json) {
               // test if input error
-              if(json.err){
-                console.log("Error flag");
+              if (json.err) {
+                document.getElementById("modal-error").style.display = "block";
               } else {
-                console.log("Render app");
+                // add new directory to view
+                var newPath = "http://127.0.0.1:8000/dirR?path=";
+                // hide modal
+                modal.style.display = "none";
+
+                // render buttons
+                var btnsArr = Array.from(document.getElementById("buttons").querySelectorAll("button"));
+                for (let i = 0; i < btnsArr.length; i++) {
+                  btnsArr[i].setAttribute("active", false);
+                  if (btnsArr[i].innerHTML == "+") {
+                    btnsArr[i].setAttribute("active", true);
+                    newPath = newPath + json.dir[0];
+                    btnsArr[i].setAttribute("path", newPath);
+
+                    var btnName = json.dir[0].split("\\").pop();
+                    if (btnName.length == 0) {
+                      btnName = json.dir[0];
+                    }
+                    btnsArr[i].innerHTML = btnName;
+
+                    // add new extra
+                    var newBtn = document.createElement("button");
+                    newBtn.innerHTML = "+";
+                    newBtn.id = `b${btnsArr.length + 1}`;
+                    document.getElementById("buttons").appendChild(newBtn);
+                  }
+                }
+
+                // clear current list and render view
+                document.getElementById("viewer").innerHTML = "";
+                getAndRender(newPath);
               }
             })
-          }).catch(function(err){
-            console.log(err);
+          }).catch(function (err) {
+            console.log("error: ", err);
           });
+          
         }
+
+        // switch tabs
+        // var activeBtn = e.target.getAttribute("active") == "true";
+        // if (!activeBtn && !addBtn) {
+        //   // render buttons
+        //   var btnsArr = Array.from(document.getElementById("buttons").querySelectorAll("button"));
+        //   for (let i = 0; i < btnsArr.length; i++) {
+        //     if (btnsArr[i].innerHTML != "+") {
+        //       var activeValue = btnsArr[i].id == e.target.id ? true : false;
+        //       btnsArr[i].setAttribute("active", activeValue);
+        //     }
+        //   }
+
+        //   // clease current list and render view
+        //   document.getElementById("viewer").innerHTML = "";
+        //   getAndRender(newPath);
+        // }
 
       }
     }
