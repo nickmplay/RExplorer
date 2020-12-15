@@ -99,7 +99,7 @@
     </div>
 
     <div id="buttons">
-      <button id="b1" active=true path="http://127.0.0.1:8000/dirR?path=C:\\Users\\nickm\\Documents">Documents</button>
+      <button id="b1" active=true path="C:\\Users\\nickm\\Documents">Documents</button>
       <button id="b2">+</button>
     </div>
 
@@ -159,6 +159,9 @@
             newName = json.dir[0];
           }
           document.querySelector("[active=true]").innerHTML = newName;
+
+          // update tab path
+          document.querySelector("[active=true]").setAttribute("path", json.dir[0]);
         })
       })
     };
@@ -202,6 +205,7 @@
       //process button clicks
       if (e.target.tagName == "BUTTON") {
         var addBtn = (e.target.innerHTML == "+");
+        var modalBtn = (e.target.id == "modal-add");
 
         // add new directory - show modal
         if (addBtn) {
@@ -263,21 +267,25 @@
         }
 
         // switch tabs
-        // var activeBtn = e.target.getAttribute("active") == "true";
-        // if (!activeBtn && !addBtn) {
-        //   // render buttons
-        //   var btnsArr = Array.from(document.getElementById("buttons").querySelectorAll("button"));
-        //   for (let i = 0; i < btnsArr.length; i++) {
-        //     if (btnsArr[i].innerHTML != "+") {
-        //       var activeValue = btnsArr[i].id == e.target.id ? true : false;
-        //       btnsArr[i].setAttribute("active", activeValue);
-        //     }
-        //   }
+        var activeBtn = e.target.getAttribute("active") == "true";
+        if (!activeBtn && !addBtn && !modalBtn) {
+          // render buttons
+          var newPath = "http://127.0.0.1:8000/dirR?path=";
+          var btnsArr = Array.from(document.getElementById("buttons").querySelectorAll("button"));
+          for (let i = 0; i < btnsArr.length; i++) {
+            if (btnsArr[i].innerHTML != "+") {
+              var activeValue = btnsArr[i].id == e.target.id ? true : false;
+              btnsArr[i].setAttribute("active", activeValue);
+              if (activeValue){
+                newPath += btnsArr[i].getAttribute("path");
+              }
+            }
+          }
 
-        //   // clease current list and render view
-        //   document.getElementById("viewer").innerHTML = "";
-        //   getAndRender(newPath);
-        // }
+          // clease current list and render view
+          document.getElementById("viewer").innerHTML = "";
+          getAndRender(newPath);
+        }
 
       }
     }
