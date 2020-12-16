@@ -103,7 +103,9 @@
       <button id="b2">+</button>
     </div>
 
-    <h2 id="path"></h2>
+    <div id="path-group"><span class="close">&times;</span>
+      <h2 id="path"></h2>
+    </div>
 
     <ul id="viewer">
 
@@ -117,6 +119,53 @@
       modal.style.display = "none";
     }
 
+    // remove tab - X
+    document.getElementsByClassName("close")[1].onclick = function (e) {
+
+      var btnsArr = Array.from(document.getElementById("buttons").querySelectorAll("button"));
+      if (btnsArr.length > 1) {
+        // remove active button
+        var iRemove = 0;
+        for (let i = 0; i < btnsArr.length; i++) {
+          let btnActive = (btnsArr[i].getAttribute("active") == "true");
+          if (btnActive) {
+            iRemove = parseInt(btnsArr[i].id.split("").splice(1).join(""));
+            console.log(iRemove);
+          }
+        }
+
+        // delete selected tab
+        var btnRemove = document.getElementById(`b${iRemove}`);
+        document.getElementById("buttons").removeChild(btnRemove);
+        btnsArr = Array.from(document.getElementById("buttons").querySelectorAll("button"));
+
+        // loop buttons and rename ids
+        var leftReplacement = false;
+        for (let i = 0; i < btnsArr.length; i++) {
+          btnsArr[i].id = `b${i + 1}`;
+          btnsArr[i].setAttribute("active", false);
+
+          // set new active
+          if (iRemove - 1 > 0 && iRemove - 1 == i + 1) {
+            leftReplacement = true;
+            btnsArr[i].click();
+          }
+        }
+
+        // no new left tab selected
+        if (!leftReplacement) {
+          // right replacement
+          if (btnsArr.length > 1) {
+            btnsArr[0].click();
+          } else {
+            // clear UI
+            document.getElementById("viewer").innerHTML = "";
+            document.getElementById("path").innerHTML = "Push + to add a Tab";
+          }
+        }
+      }
+    }
+
     // close modal - background
     var modal = document.getElementById("myModal");
     window.onclick = function (event) {
@@ -127,12 +176,12 @@
 
     // fetch data and update list and button name
     var getAndRender = function (sPath) {
-      console.log(sPath);
+      //console.log(sPath);
       fetch(sPath).then(function (response) {
         response.json().then(function (json) {
           // file path
           document.getElementById("path").innerHTML = json.dir;
-          
+
           // directory contents
           var uList = document.getElementById("viewer");
 
@@ -263,7 +312,7 @@
           }).catch(function (err) {
             console.log("error: ", err);
           });
-          
+
         }
 
         // switch tabs
@@ -276,7 +325,7 @@
             if (btnsArr[i].innerHTML != "+") {
               var activeValue = btnsArr[i].id == e.target.id ? true : false;
               btnsArr[i].setAttribute("active", activeValue);
-              if (activeValue){
+              if (activeValue) {
                 newPath += btnsArr[i].getAttribute("path");
               }
             }
