@@ -6,21 +6,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rexplorer</title>
   <style>
-    ul {
-      list-style: none;
+    body {
+      color: white;
+      background-color: #002152;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
-    li {
+    h2 {
+      margin: 9px;
+      margin-left: 0;
+      padding-left: 0;
+    }
+
+    #viewer p {
       border: 1px solid silver;
-      padding: 2px;
+      border-bottom: 0px;
+      margin: 0;
+      padding: 4px;
+    }
+
+    #viewer p:hover {
+      background-color: #003D99;
+    }
+
+    #viewer p.folder:before {
+      content: "\1F5C0";
+      list-style-position: outside;
+      margin-right: 4px;
+    }
+
+    #viewer p.file:before {
+      content: "\1F5CE";
+      list-style-position: outside;
+      margin: 0 6px 0 4px;
+    }
+
+    #viewer p:last-child {
+      border-bottom: 1px solid silver;
+      margin-bottom: 9px;
     }
 
     .folder {
-      background-color: goldenrod;
+      background-color: #002152;
     }
 
     .file {
-      background-color: cadetblue;
+      background-color: #002152;
+    }
+
+    #app {
+      margin: 0 auto;
+      width: 600px;
     }
 
     /* The Modal (background) */
@@ -47,13 +83,28 @@
 
     /* Modal Content/Box */
     .modal-content {
-      background-color: #fefefe;
+      background-color: #002152;
       margin: 15% auto;
       /* 15% from the top and centered */
       padding: 20px;
       border: 1px solid #888;
-      width: 80%;
+      width: 700px;
       /* Could be more or less, depending on screen size */
+    }
+
+    .modal-content button {
+      background-color: #BCEE03;
+      border: none;
+      padding: 4px
+    }
+
+    .modal-content button:hover {
+      background-color: #ddd;
+    }
+
+    .modal-content input {
+      border: none;
+      padding: 4px;
     }
 
     /* The Close Button */
@@ -66,26 +117,61 @@
 
     .close:hover,
     .close:focus {
-      color: black;
+      color: #AA2111;
       text-decoration: none;
       cursor: pointer;
     }
 
     #modal-error {
-      background-color: red;
       display: none;
+      background-color: #AA2111;
+      margin-bottom: 0;
+      padding: 4px;
     }
 
-    [active=true] {
-      background-color: yellow;
+    /* Button/Tabs */
+    /* Style the tab */
+    #buttons {
+      overflow: hidden;
+      border: 1px solid #ccc;
+      background-color: #002152;
+    }
+
+    /* Style the buttons that are used to open the tab content */
+    #buttons button {
+      background-color: inherit;
+      color: white;
+      float: left;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      transition: 0.3s;
+    }
+
+    /* Change background color of buttons on hover */
+    #buttons button:hover {
+      background-color: #ddd;
+    }
+
+    /* Create an active/current tablink class */
+    #buttons [active=true] {
+      background-color: #BCEE03;
+      color: black;
+    }
+
+    /* Style the tab content */
+    #viewer-group {
+      padding: 6px 12px;
+      border: 1px solid #ccc;
+      border-top: none;
     }
   </style>
 </head>
 
 <body>
-  <h1>Rexplorer</h1>
-
   <div id="app">
+    <h1>Rexplorer</h1>
     <!-- The Modal -->
     <div id="myModal" class="modal">
       <!-- Modal content -->
@@ -103,13 +189,14 @@
       <button id="b2">+</button>
     </div>
 
-    <div id="path-group"><span class="close">&times;</span>
-      <h2 id="path"></h2>
+    <div id="viewer-group">
+      <div id="path-group"><span class="close">&times;</span>
+        <h2 id="path"></h2>
+      </div>
+
+      <div id="viewer"></div>
     </div>
 
-    <ul id="viewer">
-
-    </ul>
   </div>
 
   <script src="./js/app.js"></script>
@@ -187,7 +274,7 @@
 
           // folders
           for (let i = 0; i < json.subDirs.length; i++) {
-            let newLi = document.createElement("li");
+            let newLi = document.createElement("p");
             newLi.innerHTML = json.subDirs[i];
             newLi.classList.add("folder");
             newLi.setAttribute("path", [json.dir, "\\", json.subDirs[i]].join(''));
@@ -196,7 +283,7 @@
 
           // files
           for (let i = 0; i < json.files.length; i++) {
-            let newLi = document.createElement("li");
+            let newLi = document.createElement("p");
             newLi.innerHTML = json.files[i];
             newLi.classList.add("file");
             uList.appendChild(newLi);

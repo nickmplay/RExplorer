@@ -1,0 +1,5 @@
+dark-blue #002152
+lighter-blue #003D99
+lime-green #BCEE03
+grey #70756E
+red #AA2111
