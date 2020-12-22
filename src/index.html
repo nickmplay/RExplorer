@@ -199,6 +199,9 @@
 
   </div>
   <script>
+    // declare constants
+    const sURLdirR = "http://127.0.0.1:8000/dirR?path=";
+
     // close the modal - X
     document.getElementsByClassName("close")[0].onclick = function () {
       modal.style.display = "none";
@@ -273,19 +276,19 @@
 
             // folders
             for (let i = 0; i < json.subDirs.length; i++) {
-              let newLi = document.createElement("p");
-              newLi.innerHTML = json.subDirs[i];
-              newLi.classList.add("folder");
-              newLi.setAttribute("path", [json.dir, "\\", json.subDirs[i]].join(''));
-              uList.appendChild(newLi);
+              let newElem = document.createElement("p");
+              newElem.innerHTML = json.subDirs[i];
+              newElem.classList.add("folder");
+              newElem.setAttribute("path", [json.dir, "\\", json.subDirs[i]].join(''));
+              uList.appendChild(newElem);
             }
 
             // files
             for (let i = 0; i < json.files.length; i++) {
-              let newLi = document.createElement("p");
-              newLi.innerHTML = json.files[i];
-              newLi.classList.add("file");
-              uList.appendChild(newLi);
+              let newElem = document.createElement("p");
+              newElem.innerHTML = json.files[i];
+              newElem.classList.add("file");
+              uList.appendChild(newElem);
             }
 
             // update tab name
@@ -299,17 +302,14 @@
             document.querySelector("[active=true]").setAttribute("path", json.dir[0]);
           } else {
             // render error p
-            let newP = document.createElement("p");
-            newP.innerHTML = "Server Error";
-            newP.classList.add("error");
-            document.getElementById("viewer").appendChild(newP);
+            let newElem = document.createElement("p");
+            newElem.innerHTML = "Server Error";
+            newElem.classList.add("error");
+            document.getElementById("viewer").appendChild(newElem);
           }
         })
       })
     };
-
-    // initial render
-    getAndRender("http://127.0.0.1:8000/dirR?path=C:\\Users\\nickm\\Documents")
 
     // **********************
     // add event handler - double click
@@ -321,8 +321,8 @@
         document.getElementById("viewer").innerHTML = "";
 
         // fetch and render new directory
-        var newPath = "http://127.0.0.1:8000/dirR?path=";
-        newPath += e.target.getAttribute("path");
+        var newPath = sURLdirR + e.target.getAttribute("path");
+        //newPath += e.target.getAttribute("path");
         getAndRender(newPath);
       }
 
@@ -334,7 +334,7 @@
         // get parent
         var newPath = e.target.innerHTML.split("\\");
         newPath.splice(-1);
-        newPath = "http://127.0.0.1:8000/dirR?path=" + newPath.join("\\");
+        newPath = sURLdirR + newPath.join("\\");
 
         // fetch and render
         getAndRender(newPath);
@@ -359,8 +359,7 @@
 
         // add new directory - fetch
         if (e.target.id == "modal-add") {
-          var newPath = document.getElementById("new-path").value;
-          newPath = "http://127.0.0.1:8000/dirR?path=" + newPath;
+          var newPath = sURLdirR + document.getElementById("new-path").value;
 
           // test if path is valid
           fetch(newPath).then(function (response) {
@@ -370,7 +369,7 @@
                 document.getElementById("modal-error").style.display = "block";
               } else {
                 // add new directory to view
-                var newPath = "http://127.0.0.1:8000/dirR?path=";
+                var newPath = sURLdirR;
                 // hide modal
                 modal.style.display = "none";
 
@@ -412,7 +411,7 @@
         var activeBtn = e.target.getAttribute("active") == "true";
         if (!activeBtn && !addBtn && !modalBtn) {
           // render buttons
-          var newPath = "http://127.0.0.1:8000/dirR?path=";
+          var newPath = sURLdirR;
           var btnsArr = Array.from(document.getElementById("buttons").querySelectorAll("button"));
           for (let i = 0; i < btnsArr.length; i++) {
             if (btnsArr[i].innerHTML != "+") {
@@ -431,6 +430,9 @@
 
       }
     }
+
+    // initial render
+    getAndRender(sURLdirR + "C:\\Users\\nickm\\Documents");
 
   </script>
 </body>
