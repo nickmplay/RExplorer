@@ -29,6 +29,21 @@ dirR <- function(path){
   }
 }
 
+#* @get /openPath
+openPath <- function(path, fname){
+  # create shell command
+  path_length <- nchar(path)
+  if(substr(path, path_length - 1, path_length) != "\\"){
+    path <- paste0(path, "\\")
+  }
+  #print(paste(path, fname, sep = " - "))
+  shell_cmd <- paste0("cd ", path, " & ", '"', fname, '"')
+  
+  # run shell
+  shell(shell_cmd, wait = F)
+  return(list(dir = path, open = "ok"))
+}
+
 #* @assets ../src /
 list()
 

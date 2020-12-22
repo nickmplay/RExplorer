@@ -201,6 +201,7 @@
   <script>
     // declare constants
     const sURLdirR = "http://127.0.0.1:8000/dirR?path=";
+    const sURLopenPath = "http://127.0.0.1:8000/openPath?";
 
     // close the modal - X
     document.getElementsByClassName("close")[0].onclick = function () {
@@ -288,6 +289,8 @@
               let newElem = document.createElement("p");
               newElem.innerHTML = json.files[i];
               newElem.classList.add("file");
+              newElem.setAttribute("path", json.dir);
+              newElem.setAttribute("fname", json.files[i]);
               uList.appendChild(newElem);
             }
 
@@ -338,6 +341,17 @@
 
         // fetch and render
         getAndRender(newPath);
+      }
+
+      // open file
+      if (e.target.classList[0] == "file") {
+        var newPath = `${sURLopenPath}path=${e.target.getAttribute("path")}&fname=${e.target.getAttribute("fname")}`;
+        
+        fetch(newPath).then(function (response) {
+          response.json().then(function (json) {
+            //console.log(json);
+          })
+        })
       }
     }
 
