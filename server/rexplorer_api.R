@@ -18,14 +18,22 @@ cors <- function(req, res) {
 
 #* @get /dirR
 dirR <- function(path){
+  # URI decode
+  path <- URLdecode(path)
+  
   # run local query
   subd_list <- list.dirs(path, recursive = F, full.names = F)
+  subd_files <- list.files(path)
   
-  if(length(subd_list) == 0){
+  if(length(subd_list) == 0 & length(subd_files) == 0){
     return(list(err = "Directory not found"))
   } else {
-    file_list <- setdiff(list.files(path), subd_list)
-    return(list(dir = path, subDirs = subd_list, files = file_list))
+    if(length(subd_list) == 0){
+      return(list(dir = path, subDirs = c(), files = subd_files))
+    } else {
+      file_list <- setdiff(list.files(path), subd_list)
+      return(list(dir = path, subDirs = subd_list, files = file_list))  
+    }
   }
 }
 

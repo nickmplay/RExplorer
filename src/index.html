@@ -264,7 +264,13 @@
 
     // fetch data and update list and button name
     var getAndRender = function (sPath) {
-      //console.log(sPath);
+      // validate input
+      var pathParam = sPath.split(sURLdirR).pop();
+      if(sPath.indexOf("&") > 0){
+        sPath = sPath.replace("&", encodeURIComponent("&"));
+      }
+
+      // fetch dir data
       fetch(sPath).then(function (response) {
         response.json().then(function (json) {
           // is error?
