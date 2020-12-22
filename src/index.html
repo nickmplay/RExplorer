@@ -334,7 +334,7 @@
         // get parent
         var newPath = e.target.innerHTML.split("\\");
         newPath.splice(-1);
-        newPath = sURLdirR + newPath.join("\\");
+        newPath = sURLdirR + (newPath.length == 1 ? newPath + "\\" : newPath.join("\\"));
 
         // fetch and render
         getAndRender(newPath);
