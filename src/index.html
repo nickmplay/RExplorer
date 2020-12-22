@@ -269,7 +269,7 @@
           // is error?
           if (!json.err) {
             // file path
-            document.getElementById("path").innerHTML = json.dir;
+            document.getElementById("path").innerHTML = json.dir[0].replace(/\\\\/, "\\");
 
             // directory contents
             var uList = document.getElementById("viewer");
