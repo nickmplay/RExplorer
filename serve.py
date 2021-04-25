@@ -16,7 +16,6 @@ def home():
 @app.route('/dirR', methods=['GET'])
 def list_files():
     if 'path' in request.args:
-        # return jsonify({"Path": request.args['path']})
         return os_list_files(path=request.args['path'])
     else:
         return "Error: No path field provided. Please specify a path."
