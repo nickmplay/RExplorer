@@ -52,7 +52,7 @@ openPath <- function(path, fname){
   return(list(dir = path, open = "ok"))
 }
 
-#* @assets ../src /
+#* @assets ../templates /
 list()
 
 # http://127.0.0.1:8000/dirR?path=C:/Users/nickm/Documents/2_Work
